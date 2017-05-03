@@ -49,7 +49,10 @@ public class Parser{
 							if (Pattern.matches("^R\\d{1,2}",operands[0]) && Pattern.matches("-?\\d(\\d)?",operands[1])){						//immediate parser
 								System.out.println("Valid");
 							}
-							else{System.out.println("Invalid"); System.exit(0);}
+							else{
+								System.out.println("Overflow"); 
+								//System.exit(0);
+							}
 							System.out.println("\n");
 							
 						}
@@ -58,7 +61,10 @@ public class Parser{
 							if (Pattern.matches("^R\\d{1,2}",operands[0]) && Pattern.matches("^R\\d{1,2}",operands[1])){						//immediate parser
 								System.out.println("Valid");
 							}
-							else{System.out.println("Invalid"); System.exit(0);}
+							else{
+								System.out.println("Overflow"); 
+								//System.exit(0);
+							}
 							System.out.println("\n");
 							
 						}
@@ -67,7 +73,10 @@ public class Parser{
 							if (Pattern.matches("^R\\d{1,2}",operands[0]) && Pattern.matches("^R\\d{1,2}",operands[1])){						//immediate parser
 								System.out.println("Valid");
 							}
-							else{System.out.println("Invalid"); System.exit(0);}
+							else{
+								System.out.println("Overflow"); 
+								//System.exit(0);
+							}
 							System.out.println("\n");
 							
 						}
@@ -76,7 +85,10 @@ public class Parser{
 							if (Pattern.matches("^R\\d{1,2}",operands[0]) && Pattern.matches("^R\\d{1,2}",operands[1])){						//immediate parser
 								System.out.println("Valid");
 							}
-							else{System.out.println("Invalid"); System.exit(0);}
+							else{
+								System.out.println("Overflow"); 
+								//System.exit(0);
+							}
 							System.out.println("\n");
 							
 						}
