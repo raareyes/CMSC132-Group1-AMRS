@@ -15,7 +15,7 @@ public class Parser{
 				if(currentLine.isEmpty()){
 					continue;
 				}
-				String[] data = currentLine.split(" ");									//splits by character
+				String[] data = currentLine.split("\\s+");									//splits by character
 				String[] inst = new String[3];
 
 				for(String str:data){
@@ -45,7 +45,10 @@ public class Parser{
 						inst[1] = operands[0];
 						inst[2] = operands[1];
 
-						if(Pattern.matches("LOAD", inst[0])){
+						if ((Object)inst[0] == null){
+							continue;
+						}
+						else if(Pattern.matches("LOAD", inst[0])){
 							if (Pattern.matches("^R\\d{1,2}",operands[0]) && Pattern.matches("-?\\d(\\d)?",operands[1])){						//immediate parser
 								System.out.println("Valid");
 							}
@@ -53,11 +56,12 @@ public class Parser{
 								System.out.println("Overflow"); 
 								//System.exit(0);
 							}
+							stacks.push(inst);
 							System.out.println("\n");
 							
 						}
 
-						if(Pattern.matches("ADD", inst[0])){
+						else if(Pattern.matches("ADD", inst[0])){
 							if (Pattern.matches("^R\\d{1,2}",operands[0]) && Pattern.matches("^R\\d{1,2}",operands[1])){						//immediate parser
 								System.out.println("Valid");
 							}
@@ -65,11 +69,12 @@ public class Parser{
 								System.out.println("Overflow"); 
 								//System.exit(0);
 							}
+							stacks.push(inst);
 							System.out.println("\n");
 							
 						}
 
-						if(Pattern.matches("SUB", inst[0])){
+						else if(Pattern.matches("SUB", inst[0])){
 							if (Pattern.matches("^R\\d{1,2}",operands[0]) && Pattern.matches("^R\\d{1,2}",operands[1])){						//immediate parser
 								System.out.println("Valid");
 							}
@@ -77,11 +82,12 @@ public class Parser{
 								System.out.println("Overflow"); 
 								//System.exit(0);
 							}
+							stacks.push(inst);
 							System.out.println("\n");
 							
 						}
 
-						if(Pattern.matches("CMP", inst[0])){
+						else if(Pattern.matches("CMP", inst[0])){
 							if (Pattern.matches("^R\\d{1,2}",operands[0]) && Pattern.matches("^R\\d{1,2}",operands[1])){						//immediate parser
 								System.out.println("Valid");
 							}
@@ -89,9 +95,10 @@ public class Parser{
 								System.out.println("Overflow"); 
 								//System.exit(0);
 							}
+							stacks.push(inst);
 							System.out.println("\n");
-							
 						}
+						
 
 						/*
 						if (Pattern.matches("\\d(\\d)?",operands[0]))						//immediate parser
@@ -108,9 +115,13 @@ public class Parser{
 						else
 							System.out.println("Invalid operand");
 						*/					}
+						else {
+							System.out.println("Invalid Instruction");
+							System.exit(0);
+						}
 
 				}
-				stacks.push(inst);
+				
 			}
 		}
 		catch(Exception e){

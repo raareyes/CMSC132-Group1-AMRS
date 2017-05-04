@@ -11,9 +11,15 @@ public class Main{
 	
 		for(int i=1; i<=32; i++){
 			String reg = "R" + i;
-			registers.put(reg, 100);
+			registers.put(reg, null);
 		}
-		
+		registers.put("ZF",0);
+		registers.put("OF",0);
+		registers.put("NF",0);
+		registers.put("MAR",0);		
+		registers.put("MBR",0);
+		registers.put("PC",0);		 
+		 
 		Stack<String[]> stacks = Parser.reader();
 		
 		for (String[] e : stacks){
@@ -25,13 +31,16 @@ public class Main{
 		
 		int of = 0;
 
-		for (String[] e : stacks){
+		for (String[] e : stacks){	//FETCH
 			String inst = e[0];
 			String op1 = e[1];
 			String op2 = e[2];
+			registers.put("PC",registers.get("PC")+1);
 
+			//decode
 			if(Pattern.matches("LOAD", inst)){//If LOAD
 				int o2 = Integer.parseInt(op2);
+				//execute
 				if (o2 > 99){
 					registers.replace(op1, 99);
 					of = 1;
@@ -43,11 +52,17 @@ public class Main{
 				}
 			}
 
-			if(Pattern.matches("ADD", inst)){//If ADD
+			else if(Pattern.matches("ADD", inst)){//If ADD
+				if (registers.get(op1) == null || registers.get(op2) == null){
+					System.out.println("Error");
+					System.exit(0);
+				}
 				int o1 = registers.get(op1);
 				int o2 = registers.get(op2);
+				//execute
 
 				o1 = o1 + o2;
+
 
 				if (o1 > 99){
 					registers.replace(op1, 99);
@@ -60,7 +75,11 @@ public class Main{
 				}	
 			}
 
-			if(Pattern.matches("SUB", inst)){//If SUB
+			else if(Pattern.matches("SUB", inst)){//If SUB
+				if (registers.get(op1) == null || registers.get(op2) == null){
+					System.out.println("Error");
+					System.exit(0);
+				}
 				int o1 = registers.get(op1);
 				int o2 = registers.get(op2);
 
@@ -77,11 +96,15 @@ public class Main{
 				}	
 			}
 
-			if(Pattern.matches("CMP", inst)){//If CMP
+			else if(Pattern.matches("CMP", inst)){//If CMP
+				if (registers.get(op1) == null || registers.get(op2) == null){
+					System.out.println("Error");
+					System.exit(0);
+				}
 				int o1 = registers.get(op1);
 				int o2 = registers.get(op2);
 				int zf;
-
+				int nf;
 				o1 = o1 - o2;
 
 				if (o1 == 0){
@@ -90,7 +113,16 @@ public class Main{
 				}else {
 					zf = 0;
 					System.out.println("\t\t zf: " + zf);
-				}	
+				}
+				if (o1 < 0){
+					nf = 1;
+					System.out.println("\t\t nf: " + nf);
+				}else {
+					nf = 0;
+					System.out.println("\t\t nf: " + nf);
+				}
+				registers.replace("ZF",zf);
+				registers.replace("NF",nf);
 			}
 
 		}
@@ -101,7 +133,12 @@ public class Main{
 			System.out.println(reg + ": " + registers.get(reg));
 
 		}
-		
+		System.out.println("ZF: "+registers.get("ZF"));
+		System.out.println("OF: "+registers.get("OF"));
+		System.out.println("NF: "+registers.get("NF"));
+		System.out.println("MAR: "+registers.get("MAR"));		
+		System.out.println("MBR: "+registers.get("MBR"));
+		System.out.println("PC: "+registers.get("PC"));	
 	}
 	
 }
