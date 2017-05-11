@@ -7,10 +7,11 @@ public class Main{
 
 	public static Stack<String[]> stacks = new Stack<String[]>();
 	public static HashMap<String, Integer> registers = new HashMap<String, Integer>();
+	public static ArrayList<String[]> dependencyList = new ArrayList<String[]>();
 	public final static int MAX = 99, MIN = -99;
 	public final static int LOAD = 0, ADD = 1, SUB = 2, CMP = 3;
 	public static boolean[] stages = {false, false, false, false, false};
-	private static ArrayList<Cycle> cycles = new ArrayList<Cycle>();
+	public static ArrayList<Cycle> cycles = new ArrayList<Cycle>();
 	public static int doneCycles = 0;
 	private static int clockCycles = 0;
 	private static String inst, op1, op2;
@@ -59,7 +60,7 @@ public class Main{
 			}
 
 			if (clockCycles < stacks.size()){
-				Cycle cycle = new Cycle(sRegisters);
+				Cycle cycle = new Cycle(sRegisters, clockCycles);
 				cycle.fetch();
 				cycles.add(cycle);
 			}
