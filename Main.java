@@ -11,8 +11,11 @@ public class Main{
 	public final static int LOAD = 0, ADD = 1, SUB = 2, CMP = 3;
 	public static boolean[] stages = {false, false, false, false, false};
 	private static ArrayList<Cycle> cycles = new ArrayList<Cycle>();
+	public static int doneCycles = 0;
 	private static int clockCycles = 0;
 	private static String inst, op1, op2;
+	private static int stalls = 0;
+	public static boolean stalled = false;
 	
 	public static void main(String[] args){
 		
@@ -34,25 +37,32 @@ public class Main{
 		int[] values;
 		int result;
 
-		for (String[] e : stacks){
-			cycles.add(new Cycle(sRegisters));
-		}
-
-
+			/*
+				Cycle cycler = new Cycle(sRegisters);
+				cycler.fetch();
+				cycles.add(cycler);
+				clockCycles ++;
+				sRegisters.incPC();*/
 		do{
-		System.out.println("clockCycles: " + clockCycles);
-			for (boolean t : stages){
+		System.out.println("\n==========================\nclockCycles: " + clockCycles);
+			/*for (boolean t : stages){
 				System.out.println(t);
-			}
+			}*/
 			System.out.println("\nInstruction: " + sRegisters.getPC());
 
 			
 			for (Cycle c : cycles){
-				if (c.run()){
-					cycles.remove(c);
-				}
+					System.out.println("==========================\n");
+
+				c.run();
+					System.out.println("==========================\n");
 			}
 
+			if (clockCycles < stacks.size()){
+				Cycle cycle = new Cycle(sRegisters);
+				cycle.fetch();
+				cycles.add(cycle);
+			}
 
 
 			/*fetch(sRegisters);
@@ -65,8 +75,11 @@ public class Main{
 			sRegisters.printSRegisters();
 			sRegisters.resetFlags();
 			sRegisters.incPC();
+			if (stalled)
+				stalls ++;
+			stalled = false;
 
-		}while (!(cycles.isEmpty()));
+		}while (doneCycles < cycles.size());
 		//print registers
 		System.out.println("");
 		for(int i=1; i<=32; i++){
@@ -75,6 +88,7 @@ public class Main{
 			System.out.println(reg + ": " + registers.get(reg));
 
 		}
+		System.out.println("Stalls: " + stalls);
 	}
 	
 	

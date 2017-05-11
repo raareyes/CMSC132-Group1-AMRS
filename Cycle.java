@@ -1,7 +1,7 @@
 
 import java.util.Stack;
 public class Cycle {
-	public static char stage;
+	public char stage;
 	final static char FETCH = 'F';
 	final static char DECODE = 'D';
 	final static char EXECUTE = 'E';
@@ -24,80 +24,85 @@ public class Cycle {
 		this.inst = data[0];
 		this.op1 = data[1];
 		this.op2 = data[2];
-		System.out.println("Fetch: OK");
+		System.out.println("\nFetch: OK");
 		this.stage = DECODE;
 		//create new process thread
 	}
 
-	public boolean run() {
-		System.out.println(this.stage);
-		System.out.println(this.inst);
-		System.out.println(this.op1);
-		System.out.println(this.op2);
+	public void stall(){
+		System.out.println("Stall");
+		Main.stalled = true;
+
+	}
+
+	public void run() {
+		System.out.println("\nStage: " + this.stage);
+		System.out.println("Instruction: " + this.inst);
+		System.out.println("Op1: " + this.op1);
+		System.out.println("Op2: " + this.op2);
         switch (this.stage){
         	case FETCH:
         		if (Main.stages[0]){
-        			//stall();
-        			return false;
+        			stall();
         		}
         		else{
         			Main.stages[0] = true;
         			fetch();
-					return false;
         		}
+        	break;
         	case DECODE:
         		if (Main.stages[1]){
-        			//stall();
-        			return false;
+        			stall();
         		}
 				else{
 					Main.stages[0] = false;
         			Main.stages[1] = true;
 					decode();
-					return false;
+				System.out.println(this.stage);
 				}
+        	break;
         	case EXECUTE:
         		if (Main.stages[2]){
-        			//stall();
-        			return false;
+        			stall();
         		}
         		else{
 					Main.stages[1] = false;
         			Main.stages[2] = true;
         			execute();
-        			return false;
         		}
+        	break;
         	case MEMACCESS:
         		if (Main.stages[3]){
-        			//stall();
-        			return false;
+        			stall();
         		}
         		else{
 					Main.stages[2] = false;
         			Main.stages[3] = true;
         			memoryAccess();
-        			return false;
         		}
+        	break;
         	case WRITEBACK:
         		if (Main.stages[4]){
-        			//stall();
-        			return false;
+        			stall();
         		}
         		else{
 					Main.stages[3] = false;
         			Main.stages[4] = true;
         			writeBack(this.values[0]);
-        			return false;
         		}
-        	default:
+        	break;
+        	case 'R':
 				Main.stages[4] = false;
-        		return true;
+        		Main.doneCycles ++;
+        		this.stage = 'Q';
+        	break;
+        	default:
+        		break;
         }
     }
 
 	public void decode() {
 		this.values = new int[3];
-		
 		switch(inst) {
 		case "LOAD": values[0] = Main.LOAD;
 					 values[1] = Main.LOAD;
@@ -105,24 +110,45 @@ public class Cycle {
 					 //System.out.println("Load");
 					 break;
 					 
-		case "ADD": values[0] = Main.ADD;
+		case "ADD":
+					if (Main.registers.get(op1) == null || Main.registers.get(op2) == null){
+						stall();
+						
+						Main.stages[1] = false;
+						return;
+					}
+					values[0] = Main.ADD;
 					values[1] = Main.registers.get(op1);
 					values[2] = Main.registers.get(op2);
 					//System.out.println("Add");
 					break;
 					
-		case "SUB": values[0] = Main.SUB;
+		case "SUB": 
+					if (Main.registers.get(op1) == null || Main.registers.get(op2) == null){
+						stall();
+						
+						Main.stages[1] = false;
+						return;
+					}
+					values[0] = Main.SUB;
 					values[1] = Main.registers.get(op1);
 					values[2] = Main.registers.get(op2);
 					break;
 					
-		case "CMP": values[0] = Main.CMP;
+		case "CMP":
+					if (Main.registers.get(op1) == null || Main.registers.get(op2) == null){
+						stall();
+						
+						Main.stages[1] = false;
+						return;
+					}
+					values[0] = Main.CMP;
 					values[1] = Main.registers.get(op1);
 					values[2] = Main.registers.get(op2);
 					break;
 		}
 		
-		System.out.println("Decode: OK");
+		System.out.println("\nDecode: OK");
 		this.stage = EXECUTE;
 
 	}
@@ -157,18 +183,19 @@ public class Cycle {
 					else if (this.result < 0) this.sRegisters.setNF();				//check for negative flag
 					break;
 		}
-		System.out.println("Execute: OK");
+		System.out.println("\nExecute: OK");
 		this.stage = MEMACCESS;
 	}
 	
 	public void memoryAccess() {
-		System.out.println("Memory Access: OK");
+		System.out.println("\nMemory Access: OK");
 		this.stage = WRITEBACK;
 	}
 	
 	public void writeBack(int opcode) {
 		if(opcode != 3) Main.registers.replace(op1, this.result);
-		System.out.println("Write Back: OK");
+		this.stage = 'R';
+		System.out.println("\nWrite Back: OK");
 	}
 
 
