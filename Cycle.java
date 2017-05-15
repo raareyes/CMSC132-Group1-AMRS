@@ -25,21 +25,23 @@ public class Cycle {
 		this.op1 = data[1];
 		this.op2 = data[2];
 		System.out.println("\nFetch: OK");
+		//System.out.println("\nStage: " + this.stage);
+		System.out.println("\tInstruction: " + this.inst);
+		System.out.println("\tOp1: " + this.op1);
+		System.out.println("\tOp2: " + this.op2);
 		this.stage = DECODE;
 		//create new process thread
 	}
 
 	public void stall(){
-		System.out.println("Stall");
+		System.out.println("\nStalling...");
 		Main.stalled = true;
 
 	}
 
 	public void run() {
-		System.out.println("\nStage: " + this.stage);
-		System.out.println("Instruction: " + this.inst);
-		System.out.println("Op1: " + this.op1);
-		System.out.println("Op2: " + this.op2);
+		
+
         switch (this.stage){
         	case FETCH:
         		if (Main.stages[0]){
@@ -58,7 +60,7 @@ public class Cycle {
 					Main.stages[0] = false;
         			Main.stages[1] = true;
 					decode();
-				System.out.println(this.stage);
+				//System.out.println(this.stage);
 				}
         	break;
         	case EXECUTE:
@@ -94,11 +96,17 @@ public class Cycle {
         	case 'R':
 				Main.stages[4] = false;
         		Main.doneCycles ++;
-        		this.stage = 'Q';
+        		//this.stage = 'Q';
+        		System.out.println("\nDone!");
         	break;
         	default:
         		break;
         }
+
+        //System.out.println("\nStage: " + this.stage);
+		System.out.println("\tInstruction: " + this.inst);
+		System.out.println("\tOp1: " + this.op1);
+		System.out.println("\tOp2: " + this.op2);
     }
 
 	public void decode() {
@@ -170,7 +178,7 @@ public class Cycle {
 					break;
 					
 		case Main.ADD:	this.result = operand1 + operand2;
-					System.out.println(this.result + " " + operand1 + " " + operand2);
+					//System.out.println("\n\t" + this.result + " " + operand1 + " " + operand2);
 					this.result = checkOverflow(op1, this.result, this.sRegisters);
 					break;
 			

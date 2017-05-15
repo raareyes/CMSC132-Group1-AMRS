@@ -44,18 +44,18 @@ public class Main{
 				clockCycles ++;
 				sRegisters.incPC();*/
 		do{
-		System.out.println("\n==========================\nclockCycles: " + clockCycles);
+		System.out.println("\n==========================\n  || CLOCKCYCLES: " + clockCycles + " ||\n==========================\n");
 			/*for (boolean t : stages){
 				System.out.println(t);
 			}*/
-			System.out.println("\nInstruction: " + sRegisters.getPC());
+			//System.out.println("\nInstruction: " + sRegisters.getPC());
 
 			
 			for (Cycle c : cycles){
-					System.out.println("==========================\n");
+					//System.out.println("==========================\n");
 
 				c.run();
-					System.out.println("==========================\n");
+					//System.out.println("==========================\n");
 			}
 
 			if (clockCycles < stacks.size()){
@@ -79,16 +79,16 @@ public class Main{
 				stalls ++;
 			stalled = false;
 
-		}while (doneCycles < cycles.size());
+		}while (doneCycles < (cycles.size() + stalls + 1));
 		//print registers
-		System.out.println("");
+		System.out.println("\n");
 		for(int i=1; i<=32; i++){
 			String reg = "R" + i;
 			
 			System.out.println(reg + ": " + registers.get(reg));
 
 		}
-		System.out.println("Stalls: " + stalls);
+		System.out.println("\nStalls: " + stalls + "\n");
 	}
 	
 	
