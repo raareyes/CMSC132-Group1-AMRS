@@ -1,5 +1,7 @@
 
 import java.util.Stack;
+import java.util.ArrayList;
+
 public class Cycle {
 	public char stage;
 	final static char FETCH = 'F';
@@ -7,15 +9,18 @@ public class Cycle {
 	final static char EXECUTE = 'E';
 	final static char MEMACCESS = 'M';
 	final static char WRITEBACK = 'W';
+	private ArrayList<Integer> myDependency = new ArrayList<Integer>();
 	private SpecialRegisters sRegisters;
-	private String inst, op1, op2;
+	public String inst, op1, op2;
 	private int[] values;
-	private int result;
+	private int result, id;
 
 
-	public Cycle (SpecialRegisters sRegisters){
+
+	public Cycle (SpecialRegisters sRegisters, int id){
 		this.stage = FETCH;
 		this.sRegisters = sRegisters;
+		this.id = id;
 	}
 
 	public void fetch() {
@@ -40,8 +45,12 @@ public class Cycle {
 	}
 
 	public void run() {
-		
-
+		System.out.println("\nStage: " + this.stage);
+		System.out.println("Instruction: " + this.inst);
+		System.out.println("Op1: " + this.op1);
+		System.out.println("Op2: " + this.op2);
+		System.out.println(id);
+		checkDependency();
         switch (this.stage){
         	case FETCH:
         		if (Main.stages[0]){
@@ -57,10 +66,20 @@ public class Cycle {
         			stall();
         		}
 				else{
-					Main.stages[0] = false;
-        			Main.stages[1] = true;
-					decode();
-				//System.out.println(this.stage);
+					int cnt = 0;
+					for (Cycle c : Main.cycles){
+						for(int i=0; i<myDependency.size(); i++) {
+							if(c.id == myDependency.get(i) && c.stage == 'Q') {
+								myDependency.remove(i);
+							}
+						}
+					}
+					if(myDependency.isEmpty()) {
+						Main.stages[0] = false;
+	        			Main.stages[1] = true;
+						decode();
+						System.out.println(this.stage);
+					}
 				}
         	break;
         	case EXECUTE:
@@ -216,6 +235,34 @@ public class Cycle {
 			return -99;
 		}  else {
 			return result;
+		}
+	}
+
+	public void checkDependency() {
+		String dependency[] = new String[3];
+		for(int i=id-1; i>0 ; i--) {
+			if(Main.cycles.get(i).op1.equals(op1)) {
+				//waw
+				dependency[0] = id  + " & " + i;
+				dependency[1] = op1;
+				dependency[2] = "WAW"; 
+				Main.dependencyList.add(dependency);
+				myDependency.add(i);
+			} else if(Main.cycles.get(i).op1.equals(op2)) {
+				//war
+				dependency[0] = id  + " & " + i;
+				dependency[1] = op2;
+				dependency[2] = "WAR";
+				Main.dependencyList.add(dependency);
+				myDependency.add(i);
+			} else if(Main.cycles.get(i).op1.equals(op1)) {
+				//raw
+				dependency[0] = id  + " & " + i;
+				dependency[1] = op1;
+				dependency[2] = "RAW";
+				Main.dependencyList.add(dependency);
+				myDependency.add(i);
+			}
 		}
 	}
 }
