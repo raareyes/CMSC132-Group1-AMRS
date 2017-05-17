@@ -7,6 +7,7 @@ public class Main{
 
 	public static HashMap<String, Integer> registers = new HashMap<String, Integer>();
 	public static ArrayList<String[]> dependencyList = new ArrayList<String[]>();
+	public static ArrayList<ArrayList<Character>> pipeLinePrint = new ArrayList<ArrayList<Character>>();
 	public static boolean[] stages = {false, false, false, false, false};
 	public static int doneCycles = 0;
 
@@ -63,6 +64,9 @@ public class Main{
 			if (clockCycles < stacks.size()){
 				Cycle cycle = new Cycle(clockCycles);
 				cycle.fetch();
+				ArrayList<Character> temp = new ArrayList<Character>();
+				temp.add('F');
+				pipeLinePrint.add(temp);
 				cycle.generateDependencyList();
 				cycles.add(cycle);
 				sRegisters.incPC();
@@ -88,6 +92,17 @@ public class Main{
 		printRegisters();
 		printDependencies();
 		System.out.println("Stalls: " + stalls);
+
+		for (int j =0;j<pipeLinePrint.size();j++){
+			System.out.println("");
+			for (int i=0;i<j*2;i++)
+				System.out.print(" ");
+			for (Character c : pipeLinePrint.get(j)){
+				System.out.print(c + " ");
+			}
+		}
+		System.out.println("");
+
 	}
 
 	public static void initRegisters() {

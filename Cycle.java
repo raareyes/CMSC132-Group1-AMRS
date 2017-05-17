@@ -47,6 +47,9 @@ public class Cycle {
 	}
 
 	public void run() {
+		if (this.stage == 'R' || this.stage == 'Q')
+			Main.pipeLinePrint.get(this.id).add(' ');
+		else
 		if(stage != 'Q') {
 			System.out.println("\nStage: " + this.stage);
 			System.out.println("Opcode: " + this.inst);
@@ -66,42 +69,50 @@ public class Cycle {
         	break;
         	case DECODE:
         		if (Main.stages[1]  || checkDependency()){
+					Main.pipeLinePrint.get(this.id).add('S');
         			stall();
         		}
 				else{
 					Main.stages[0] = false;
         			Main.stages[1] = true;
 					decode();
+					Main.pipeLinePrint.get(this.id).add('D');
 				}
         	break;
         	case EXECUTE:
         		if (Main.stages[2]){
+					Main.pipeLinePrint.get(this.id).add('S');
         			stall();
         		}
         		else{
 					Main.stages[1] = false;
         			Main.stages[2] = true;
         			execute();
+					Main.pipeLinePrint.get(this.id).add('E');
         		}
         	break;
         	case MEMACCESS:
         		if (Main.stages[3]){
+					Main.pipeLinePrint.get(this.id).add('S');
         			stall();
         		}
         		else{
 					Main.stages[2] = false;
         			Main.stages[3] = true;
         			memoryAccess();
+					Main.pipeLinePrint.get(this.id).add('M');
         		}
         	break;
         	case WRITEBACK:
         		if (Main.stages[4]){
+					Main.pipeLinePrint.get(this.id).add('S');
         			stall();
         		}
         		else{
 					Main.stages[3] = false;
         			Main.stages[4] = true;
         			writeBack(this.values[0]);
+					Main.pipeLinePrint.get(this.id).add('W');
         		}
         	break;
         	case 'R':
@@ -243,8 +254,8 @@ public class Cycle {
 					if(!Main.dependencyList.contains(dStore)) {
 						Main.dependencyList.add(dStore);
 					}
-					System.out.println("Dependency Added");
-				} else if(c.op2.equals(this.op1)) { //WAR
+				}
+				if(c.op2.equals(this.op1)) { //WAR
 					dStore[0] = Integer.toString(id);
 					dStore[1] = Integer.toString(i);
 					dStore[2] = op1;
@@ -253,7 +264,8 @@ public class Cycle {
 					if(!Main.dependencyList.contains(dStore)) {
 						Main.dependencyList.add(dStore);
 					}
-				} else if(c.op1.equals(this.op2)) { //RAW
+				}
+				if(c.op1.equals(this.op2)) { //RAW
 					dStore[0] = Integer.toString(id);
 					dStore[1] = Integer.toString(i);
 					dStore[2] = op2;
@@ -261,8 +273,8 @@ public class Cycle {
 					if(!Main.dependencyList.contains(dStore)) {
 						Main.dependencyList.add(dStore);
 					}
-					System.out.println("Dependency Added");
 				}
+				System.out.println("Dependency Added");
 			}
 			i++;
 		}
@@ -284,7 +296,7 @@ public class Cycle {
 			if(dependencyId >= 0)  {
     			for(Cycle c : Main.cycles) {
 					if(c.id == dependencyId) {
-						if(!c.isFinished || c.stage == 'F' || c.stage == 'D' || c.stage == 'E' || c.stage == 'M' || c.stage == 'W') {
+						if(!c.isFinished || c.stage != 'Q') {
 							return  true;
 						}
 					}
