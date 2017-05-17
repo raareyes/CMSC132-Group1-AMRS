@@ -231,9 +231,6 @@ public class Cycle {
 			if(c.id == id) {
 				return;
 			} else {
-				System.out.println("Id: " + id + " " + op1 + "-" + op2);
-				System.out.println("Id: " + c.id + " " + c.op1 + "-" + c.op2);
-
 				if(c.op1.equals(this.op1)) { //WAW
 					dStore[0] = Integer.toString(id);
 					dStore[1] = Integer.toString(i);
