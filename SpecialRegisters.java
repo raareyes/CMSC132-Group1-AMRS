@@ -8,11 +8,11 @@ public class SpecialRegisters {
 	private int OF;
 	private int ZF;
 	private int NF;
-	
+
 	public SpecialRegisters(Stack<String[]> stacks) {
 		this.stacks = stacks;
 	}
-	
+
 	public void initSRegisters() {
 		PC = 0;
 		MBR = new String[3];
@@ -20,50 +20,50 @@ public class SpecialRegisters {
 		ZF = 0;
 		NF = 0;
 	}
-	
+
 	public void setMAR() {
 		MAR = PC;
 	}
-	
+
 	public String[] loadMBR() {
 		MBR = stacks.get(MAR);
 		return MBR;
 	}
-	
+
 	public int getPC() {
 		return PC;
 	}
-	
+
 	public void incPC() {
 		PC++;
 	}
-	
+
 	public void setOF() {
 		OF++;
 	}
-	
+
 	public void setZF() {
 		ZF++;
 	}
-	
+
 	public void setNF() {
 		NF++;
 	}
-	
+
 	public void resetFlags() {
 		OF = 0;
 		ZF = 0;
 		NF = 0;
 	}
-	
+
 	public void printSRegisters() {
-		System.out.println("\nPC: " + PC);
-		System.out.println("MAR: " + MAR);
-		System.out.println("MBR: " + MBR[0] + " " + MBR[1] + "," + MBR[2]);
-		System.out.println("OF: " + OF);
-		System.out.println("ZF: " + ZF);
-		System.out.println("NF: " + NF);
+		System.out.println("\n\tPC: " + PC);
+		System.out.println("\tMAR: " + MAR);
+		System.out.println("\tMBR: " + MBR[0] + " " + MBR[1] + "," + MBR[2]);
+		System.out.println("\tOF: " + OF);
+		System.out.println("\tZF: " + ZF);
+		System.out.println("\tNF: " + NF);
 	}
-	
-	
+
+
 }
