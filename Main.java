@@ -144,8 +144,12 @@ public class Main{
 	public static void printPipeline(JTextArea cycs) {
 		cycs.setTabSize(2);
 		cycs.append("Pipeline:\n\n");
+		cycs.append("\t\t\t\t");
+		for (int i =0; i<clockCycles;i++) {
+			 cycs.append((i+1)+"\t");
+		}
 		for (int j =0;j<pipeLinePrint.size();j++){
-			cycs.append("\n");
+			cycs.append("\nInstruction#" + (j+1)+"\t");
 			for (int i=0;i<j;i++)
 				cycs.append("\t");
 			for (Character c : pipeLinePrint.get(j)){
