@@ -2,6 +2,9 @@
 import java.util.HashMap;
 import java.util.Stack;
 import java.util.ArrayList;
+import javax.swing.*;
+import javax.swing.text.*;
+import java.awt.*;
 
 public class Main{
 
@@ -103,6 +106,73 @@ public class Main{
 		}
 		System.out.println("");
 
+		JFrame frame = new JFrame("CMSC 132");
+		frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
+		frame.setPreferredSize(new Dimension(1200,375));
+		Container framepane = frame.getContentPane();
+
+		JTextArea cycs = new JTextArea();
+		cycs.setEditable(false);
+		JScrollPane cycpane = new JScrollPane(cycs);
+		cycpane.setPreferredSize(new Dimension (400, 300));
+		printPipeline(cycs);
+		
+		JTextArea regs = new JTextArea();
+		regs.setEditable(false);
+		JScrollPane regpane = new JScrollPane(regs);
+		regpane.setPreferredSize(new Dimension (400, 300));
+		printRegs(regs);
+		
+		JTextArea stats = new JTextArea();
+		stats.setEditable(false);
+		JScrollPane statspane = new JScrollPane(stats);
+		statspane.setPreferredSize(new Dimension (400, 300));
+		printStats(stats);
+
+		framepane.add(cycpane, BorderLayout.WEST);
+		framepane.add(regpane, BorderLayout.CENTER);
+		framepane.add(statspane, BorderLayout.EAST);
+		frame.pack();
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
+
+	}
+
+	public static void printPipeline(JTextArea cycs) {
+		cycs.setTabSize(2);
+		cycs.append("Pipeline:\n\n");
+		for (int j =0;j<pipeLinePrint.size();j++){
+			cycs.append("\n");
+			for (int i=0;i<j;i++)
+				cycs.append("\t");
+			for (Character c : pipeLinePrint.get(j)){
+				cycs.append(c + "\t");
+			}
+		}
+	}
+
+	public static void printRegs(JTextArea stats) {
+		stats.append("Registers\n\n");
+		for(int i=1; i<=32; i++){
+			String reg = "R" + i;
+			if(registers.get(reg) != null) stats.append(reg + ": " + registers.get(reg) + "\n");
+		}
+	}
+
+	public static void printStats(JTextArea stats) {
+		stats.append("Statistics\n\n");
+		stats.append("Execution: \n");
+		stats.append(clockCycles-1 + " Cycles\n");
+		stats.append(pipeLinePrint.size() + " Instructions\n");
+		stats.append(stalls + " Stalls \n");
+		stats.append("\nDependencies: \n");
+		if(dependencyList.isEmpty()) {
+			stats.append("No dependencies!\n");
+		} else {
+			for(String[] s : dependencyList) {
+				stats.append(s[0] + " & " + s[1] + " | " + s[2] + " | " + s[3] + "\n");
+			}
+		}
 	}
 
 	public static void initRegisters() {
