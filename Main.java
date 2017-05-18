@@ -138,35 +138,6 @@ public class Main{
 		}
 		System.out.println("");
 
-		JFrame frame = new JFrame("CMSC 132");
-		frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
-		frame.setPreferredSize(new Dimension(1200,375));
-		Container framepane = frame.getContentPane();
-
-		JTextArea cycs = new JTextArea();
-		cycs.setEditable(false);
-		JScrollPane cycpane = new JScrollPane(cycs);
-		cycpane.setPreferredSize(new Dimension (400, 300));
-		printPipeline(cycs);
-		
-		JTextArea regs = new JTextArea();
-		regs.setEditable(false);
-		JScrollPane regpane = new JScrollPane(regs);
-		regpane.setPreferredSize(new Dimension (400, 300));
-		printRegs(regs);
-		
-		JTextArea stats = new JTextArea();
-		stats.setEditable(false);
-		JScrollPane statspane = new JScrollPane(stats);
-		statspane.setPreferredSize(new Dimension (400, 300));
-		printStats(stats);
-
-		framepane.add(cycpane, BorderLayout.WEST);
-		framepane.add(regpane, BorderLayout.CENTER);
-		framepane.add(statspane, BorderLayout.EAST);
-		frame.pack();
-		frame.setLocationRelativeTo(null);
-		frame.setVisible(true);
 
 	}
 
